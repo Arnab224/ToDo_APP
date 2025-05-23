@@ -90,7 +90,7 @@ const App = () => {
 
     if (!res.ok) throw new Error(data.message);
 
-    // ✅ Success: Show login form
+    
     setShowSignup(false);
     setSignupForm({ name: "", username: "", email: "", password: "" });
     alert("Signup successful! Please log in.");
