@@ -8,6 +8,7 @@ const taskRoutes = require("./routers/taskRouters");
 const authRoutes = require("./routers/authRouters");
 const userRoutes = require("./routers/userRoutes");
 
+
 const path = require("path");
 
 
@@ -31,6 +32,7 @@ app.use("/api/auth", authRoutes);
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 app.use("/api/users", userRoutes);
+
 
 // Use port from .env or default to 3000
 const PORT = process.env.PORT || 3000;
