@@ -33,7 +33,7 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 app.use("/api/users", userRoutes);
 app.use(cors({
-  origin: "*", // Replace with actual Vercel URL
+  origin: "https://to-do-app-6i3j.vercel.app",
   credentials: true
 }));
 
