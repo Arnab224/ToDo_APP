@@ -64,7 +64,7 @@ const App = () => {
     e.preventDefault();
     setLoginError("");
     try {
-      const res = await axios.post(`${API_URL}/api/auth/login`, loginForm);
+      const res = await axios.post(`${API_URL}/auth/login`, loginForm);
       setUser(res.data);
       localStorage.setItem("user", JSON.stringify(res.data));
       setLoginForm({ username: "", password: "" });
@@ -84,7 +84,7 @@ const App = () => {
     };
 
     try {
-      const res = await fetch(`${API_URL}/api/auth/register`, {
+      const res = await fetch(`${API_URL}/auth/register`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -223,7 +223,7 @@ const App = () => {
     }
 
     try {
-      const res = await fetch(`${API_URL}/api/users/upload-profile`, {
+      const res = await fetch(`${API_URL}/users/upload-profile`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
