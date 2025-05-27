@@ -21,10 +21,11 @@ const App = () => {
   const [showSignup, setShowSignup] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
   const [alert, setAlert] = useState("");
+  const API_URL = "https://your-api.onrender.com/api";
 
   const fetchTasks = async () => {
     try {
-      const res = await axios.get("http://localhost:3000/tasks", {
+      const res = await axios.get(`${API_URL}/tasks`, {
         headers: { Authorization: `Bearer ${user.token}` },
       });
       setTasks(res.data);
@@ -63,7 +64,7 @@ const App = () => {
     e.preventDefault();
     setLoginError("");
     try {
-      const res = await axios.post("http://localhost:3000/api/auth/login", loginForm);
+      const res = await axios.post(`${API_URL}/api/auth/login`, loginForm);
       setUser(res.data);
       localStorage.setItem("user", JSON.stringify(res.data));
       setLoginForm({ username: "", password: "" });
@@ -83,7 +84,7 @@ const App = () => {
     };
 
     try {
-      const res = await fetch("http://localhost:3000/api/auth/register", {
+      const res = await fetch(`${API_URL}/api/auth/register`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -119,7 +120,7 @@ const App = () => {
     }
     try {
       await axios.post(
-        "http://localhost:3000/tasks",
+        `${API_URL}/tasks`,
         { text },
         { headers: { Authorization: `Bearer ${user.token}` } }
       );
@@ -136,7 +137,7 @@ const App = () => {
   const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to delete this task?")) {
       try {
-        await axios.delete(`http://localhost:3000/tasks/${id}`, {
+        await axios.delete(`${API_URL}/tasks/${id}`, {
           headers: { Authorization: `Bearer ${user.token}` },
         });
         setAlert("Task deleted successfully! 🗑️");
@@ -162,7 +163,7 @@ const App = () => {
     }
     try {
       await axios.put(
-        `http://localhost:3000/tasks/${id}`,
+        `${API_URL}/tasks/${id}`,
         { text: editText },
         { headers: { Authorization: `Bearer ${user.token}` } }
       );
@@ -189,7 +190,7 @@ const App = () => {
 
     try {
       await axios.put(
-        `http://localhost:3000/tasks/${task._id}`,
+        `${API_URL}/tasks/${task._id}`,
         {
           text: updatedTask.text,
           completed: updatedTask.completed,
@@ -222,7 +223,7 @@ const App = () => {
     }
 
     try {
-      const res = await fetch("http://localhost:3000/api/users/upload-profile", {
+      const res = await fetch(`${API_URL}/api/users/upload-profile`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -374,7 +375,7 @@ const App = () => {
           <div className="flex items-center space-x-4">
             {user.profilePic && (
               <img
-                src={`http://localhost:3000/${user.profilePic.replace(/^\/+/, '')}`}
+                src={`${API_URL}/${user.profilePic.replace(/^\/+/, '')}`}
                 alt="Profile"
                 className="w-10 h-10 rounded-full object-cover border-2 border-white shadow"
               />

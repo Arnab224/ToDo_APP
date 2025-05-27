@@ -32,6 +32,10 @@ app.use("/api/auth", authRoutes);
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 app.use("/api/users", userRoutes);
+app.use(cors({
+  origin: ["https://your-frontend.vercel.app"], // Replace with actual Vercel URL
+  credentials: true
+}));
 
 
 // Use port from .env or default to 3000
