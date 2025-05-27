@@ -36,15 +36,22 @@ const login = async (req, res) => {
     if (!isMatch)
       return res.status(400).json({ message: "Invalid credentials" });
 
-    const token = jwt.sign({ id: user._id }, "secret_key", {
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
       expiresIn: "1d",
     });
 
-    res.json({ token, name: user.name, username: user.username });
+    // ✅ Send full user data including profilePic
+    res.json({
+      token,
+      name: user.name,
+      username: user.username,
+      email: user.email,
+      profilePic: user.profilePic || "",
+    });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Login failed" });
   }
-}
+};
 
 module.exports = { register, login };

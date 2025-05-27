@@ -7,17 +7,20 @@ const App = () => {
   const [text, setText] = useState("");
   const [editId, setEditId] = useState(null);
   const [editText, setEditText] = useState("");
-  const [alert, setAlert] = useState("");
+  const [notification, setNotification] = useState("");
 
   const [loginForm, setLoginForm] = useState({ username: "", password: "" });
   const [signupForm, setSignupForm] = useState({
     name: "",
     username: "",
     password: "",
+    email: "",
   });
   const [loginError, setLoginError] = useState("");
   const [signupError, setSignupError] = useState("");
   const [showSignup, setShowSignup] = useState(false);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [alert, setAlert] = useState("");
 
   const fetchTasks = async () => {
     try {
@@ -33,11 +36,17 @@ const App = () => {
   };
 
   useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
+  const storedUser = localStorage.getItem("user");
+  if (storedUser) {
+    const parsed = JSON.parse(storedUser);
+    // Basic check: does token exist?
+    if (parsed?.token) {
+      setUser(parsed);
+    } else {
+      localStorage.removeItem("user");
     }
-  }, []);
+  }
+}, []);
 
   useEffect(() => {
     if (user) fetchTasks();
@@ -55,9 +64,7 @@ const App = () => {
     e.preventDefault();
     setLoginError("");
     try {
-      const res = await axios.post("http://localhost:3000/api/auth/login",
-        loginForm
-      );
+      const res = await axios.post("http://localhost:3000/api/auth/login", loginForm);
       setUser(res.data);
       localStorage.setItem("user", JSON.stringify(res.data));
       setLoginForm({ username: "", password: "" });
@@ -67,38 +74,36 @@ const App = () => {
   };
 
   const handleSignupSubmit = async (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  const payload = {
-    name: signupForm.name,
-    username: signupForm.username,
-    email: signupForm.email,
-    password: signupForm.password,
+    const payload = {
+      name: signupForm.name,
+      username: signupForm.username,
+      email: signupForm.email,
+      password: signupForm.password,
+    };
+
+    try {
+      const res = await fetch("http://localhost:3000/api/auth/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message);
+
+      setShowSignup(false);
+      setSignupForm({ name: "", username: "", email: "", password: "" });
+      alert("Signup successful! Please log in.");
+    } catch (error) {
+      console.error("Signup Error:", error.message);
+      setSignupError(error.message || "Signup failed.");
+    }
   };
 
-  try {
-    const res = await fetch("http://localhost:3000/api/auth/register", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payload),
-    });
-
-    const data = await res.json();
-    console.log(data);
-
-    if (!res.ok) throw new Error(data.message);
-
-    
-    setShowSignup(false);
-    setSignupForm({ name: "", username: "", email: "", password: "" });
-    alert("Signup successful! Please log in.");
-  } catch (error) {
-    console.error("Signup Error:", error.message);
-    setSignupError(error.message || "Signup failed.");
-  }
-};
   const handleLogout = () => {
     setUser(null);
     localStorage.removeItem("user");
@@ -144,16 +149,75 @@ const App = () => {
   };
 
   const toggleCompleted = async (task) => {
+  const updatedTask = {
+    ...task,
+    completed: !task.completed,
+  };
+
+  // Optimistically update UI
+  setTasks(prev =>
+    prev.map(t => (t._id === task._id ? updatedTask : t))
+  );
+
+  try {
     await axios.put(
       `http://localhost:3000/tasks/${task._id}`,
       {
-        text: task.text,
-        completed: !task.completed,
+        text: updatedTask.text,
+        completed: updatedTask.completed,
       },
       { headers: { Authorization: `Bearer ${user.token}` } }
     );
-    fetchTasks();
-  };
+  } catch (error) {
+    console.error("Failed to update task:", error);
+    // Optional: Rollback UI if needed
+    setTasks(prev => prev.map(t => (t._id === task._id ? task : t)));
+  }
+};
+
+const handleUpload = async () => {
+  if (!selectedFile) {
+    window.alert("Please select a file first.");
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append("profilePic", selectedFile);
+
+  const userData = JSON.parse(localStorage.getItem("user"));
+  const token = userData?.token;
+
+  if (!token) {
+    window.alert("No token found. Please login again.");
+    return;
+  }
+
+  try {
+    const res = await fetch("http://localhost:3000/api/users/upload-profile", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      body: formData,
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      console.error("Upload failed:", data.message);
+      window.alert("Upload failed: " + data.message);
+    } else {
+      const updatedUser = { ...user, profilePic: data.profilePic };
+      setUser(updatedUser);
+      localStorage.setItem("user", JSON.stringify(updatedUser));
+
+      window.alert("Upload successful!");
+    }
+  } catch (err) {
+    console.error("Upload error:", err);
+    window.alert("Upload error: " + err.message);
+  }
+};
 
   if (!user) {
     return (
@@ -167,24 +231,24 @@ const App = () => {
           </h2>
 
           {showSignup && (
-                <>
-                    <input
-                    name="name"
-                    placeholder="Name"
-                    value={signupForm.name}
-                    onChange={handleSignupChange}
-                    className="w-full mb-3 px-3 py-2 border rounded"
-                    />
-                    <input
-                    name="email"
-                    placeholder="Email"
-                    type="email"
-                    value={signupForm.email}
-                    onChange={handleSignupChange}
-                    className="w-full mb-3 px-3 py-2 border rounded"
-                    />
-                </>
-                )}
+            <>
+              <input
+                name="name"
+                placeholder="Name"
+                value={signupForm.name}
+                onChange={handleSignupChange}
+                className="w-full mb-3 px-3 py-2 border rounded"
+              />
+              <input
+                name="email"
+                placeholder="Email"
+                type="email"
+                value={signupForm.email}
+                onChange={handleSignupChange}
+                className="w-full mb-3 px-3 py-2 border rounded"
+              />
+            </>
+          )}
 
           <input
             name="username"
@@ -235,16 +299,43 @@ const App = () => {
     <div className="min-h-screen bg-gray-100 flex flex-col items-center py-10 px-4">
       <div className="w-full max-w-md flex justify-between items-center mb-4">
         <h1 className="text-2xl font-bold text-blue-600">ToDo List</h1>
-        <div>
-          <span className="mr-4">Hi, {user.name}</span>
-          <button
+        <div className="flex items-center space-x-3">
+            {user.profilePic && (
+            <img
+  src={`http://localhost:3000/${user.profilePic.replace(/^\/+/, '')}`}
+  alt="Profile"
+  className="w-10 h-10 rounded-full object-cover border"
+/>
+            )}
+            <span className="text-gray-800">Hi, {user.name}</span>
+            <button
             onClick={handleLogout}
             className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
-          >
+            >
             Logout
-          </button>
+            </button>
         </div>
+        </div>
+
+      <div className="w-full max-w-md mb-4">
+        <label className="block mb-1 text-gray-700 font-medium">Upload Profile Picture:</label>
+        <input
+        type="file"
+        accept="image/*"
+        onChange={(e) => setSelectedFile(e.target.files[0])}  
+        className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4
+                    file:rounded-full file:border-0 file:text-sm file:font-semibold
+                    file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+        />
+        <button
+          onClick={handleUpload}
+          className="mt-2 bg-green-500 text-white py-1 px-3 rounded hover:bg-green-600"
+        >
+          Upload
+        </button>
       </div>
+
+      
 
       {alert && (
         <div className="bg-green-200 text-green-700 px-4 py-2 rounded mb-4 w-full max-w-md text-center">

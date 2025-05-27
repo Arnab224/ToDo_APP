@@ -1,15 +1,31 @@
-import jwt from "jsonwebtoken";
-import User from "../model/User.js";
+require("dotenv").config();
+const jwt = require("jsonwebtoken");
+const User = require("../model/User");
 
-export const protect = async (req, res, next) => {
-  const token = req.headers.authorization?.split(" ")[1];
-  if (!token) return res.status(401).json({ msg: "No token, access denied" });
+const protect = async (req, res, next) => {
+  let token;
+  if (
+    req.headers.authorization &&
+    req.headers.authorization.startsWith("Bearer")
+  ) {
+    try {
+      token = req.headers.authorization.split(" ")[1];
+      console.log("=== DEBUG: Auth Middleware ===");
+      console.log("JWT Secret (signing):", process.env.JWT_SECRET);
+      console.log("Generated Token:", token);
 
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = await User.findById(decoded.userId).select("-password");
-    next();
-  } catch (err) {
-    res.status(401).json({ msg: "Token is not valid" });
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+      req.user = await User.findById(decoded.id).select("-password");
+
+      next(); 
+    } catch (error) {
+      console.error("Auth Error:", error);
+      return res.status(401).json({ message: "Unauthorized: Invalid token" });
+    }
+  } else {
+    return res.status(401).json({ message: "Unauthorized: No token" });
   }
 };
+
+module.exports = { protect };

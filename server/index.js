@@ -1,13 +1,15 @@
 
 
-require("dotenv").config(); // Load environment variables
-
+require('dotenv').config();
 const express = require("express");
 const cors = require("cors");
 const connectDB = require("./config/db");
 const taskRoutes = require("./routers/taskRouters");
 const authRoutes = require("./routers/authRouters");
-const path = require("path");//pic path
+const userRoutes = require("./routers/userRoutes");
+
+const path = require("path");
+
 
 
 
@@ -26,7 +28,9 @@ app.get("/", (req, res) => {
 
 app.use("/tasks", taskRoutes);
 app.use("/api/auth", authRoutes); 
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));// pic
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+
+app.use("/api/users", userRoutes);
 
 // Use port from .env or default to 3000
 const PORT = process.env.PORT || 3000;
