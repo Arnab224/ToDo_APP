@@ -18,8 +18,11 @@ const app = express();
 
 connectDB();
 
+app.use(cors({
+  origin: "https://to-do-app-rosy-nu.vercel.app/",
+  credentials: true
+}));
 
-app.use(cors());
 app.use(express.json());
 
 app.get("/", (req, res) => {
@@ -32,10 +35,7 @@ app.use("/api/auth", authRoutes);
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 app.use("/api/users", userRoutes);
-app.use(cors({
-  origin: "https://to-do-app-rosy-nu.vercel.app/",
-  credentials: true
-}));
+
 
 
 // Use port from .env or default to 3000
