@@ -21,7 +21,7 @@ const App = () => {
   const [showSignup, setShowSignup] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
   const [alert, setAlert] = useState("");
-  const API_URL = "https://to-do-app-rosy-nu.vercel.app/";
+  const API_URL = "https://to-do-app-rosy-nu.vercel.app";
 
   const fetchTasks = async () => {
     try {
