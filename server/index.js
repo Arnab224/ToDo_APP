@@ -14,8 +14,7 @@ connectDB();
 
 // Middleware
 app.use(cors({
-  origin: "https://to-do-app-zlqe.vercel.app",
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  origin: 'https://to-do-app-zlqe.vercel.app', // your frontend Vercel domain
   credentials: true
 }));
 
