@@ -21,7 +21,7 @@ const App = () => {
   const [showSignup, setShowSignup] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
   const [alert, setAlert] = useState("");
-  const API_URL = "https://your-api.onrender.com/api";
+  const API_URL = "to-do-app-rosy-nu.vercel.app";
 
   const fetchTasks = async () => {
     try {
