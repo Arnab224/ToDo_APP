@@ -19,7 +19,7 @@ const app = express();
 connectDB();
 
 app.use(cors({
-  origin: "https://to-do-app-rosy-nu.vercel.app/",
+  origin: ["https://to-do-app-rosy-nu.vercel.app", "http://localhost:3000"],
   credentials: true
 }));
 
