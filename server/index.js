@@ -14,9 +14,8 @@ connectDB();
 
 // Middleware
 app.use(cors({
-  origin: ["https://to-do-app-zlqe.vercel.app", "http://localhost:3000"],
+  origin: "https://to-do-app-zlqe.vercel.app",
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true
 }));
 
