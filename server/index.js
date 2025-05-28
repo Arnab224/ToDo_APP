@@ -14,9 +14,12 @@ connectDB();
 
 // Middleware
 app.use(cors({
-  origin: ["https://to-do-app-rosy-nu.vercel.app", "http://localhost:3000"],
+  origin: ["https://to-do-app-zlqe.vercel.app", "http://localhost:3000"],
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true
 }));
+
 app.use(express.json());
 
 // Static file serving
