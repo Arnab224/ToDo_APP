@@ -25,7 +25,7 @@ const App = () => {
 
   const fetchTasks = async () => {
     try {
-      const res = await axios.get(`${API_URL}/tasks`, {
+      const res = await axios.get(`${API_URL}/api/tasks`, {
         headers: { Authorization: `Bearer ${user.token}` },
       });
       setTasks(res.data);
@@ -64,7 +64,7 @@ const App = () => {
     e.preventDefault();
     setLoginError("");
     try {
-      const res = await axios.post(`${API_URL}/auth/login`, loginForm);
+      const res = await axios.post(`${API_URL}/api/auth/login`, loginForm);
       setUser(res.data);
       localStorage.setItem("user", JSON.stringify(res.data));
       setLoginForm({ username: "", password: "" });
@@ -84,7 +84,7 @@ const App = () => {
     };
 
     try {
-      const res = await fetch(`${API_URL}/auth/register`, {
+      const res = await fetch(`${API_URL}/api/auth/register`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -120,7 +120,7 @@ const App = () => {
     }
     try {
       await axios.post(
-        `${API_URL}/tasks`,
+        `${API_URL}/api/tasks`,
         { text },
         { headers: { Authorization: `Bearer ${user.token}` } }
       );
@@ -137,7 +137,7 @@ const App = () => {
   const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to delete this task?")) {
       try {
-        await axios.delete(`${API_URL}/tasks/${id}`, {
+        await axios.delete(`${API_URL}/api/tasks/${id}`, {
           headers: { Authorization: `Bearer ${user.token}` },
         });
         setAlert("Task deleted successfully! 🗑️");
@@ -163,7 +163,7 @@ const App = () => {
     }
     try {
       await axios.put(
-        `${API_URL}/tasks/${id}`,
+        `${API_URL}/api/tasks/${id}`,
         { text: editText },
         { headers: { Authorization: `Bearer ${user.token}` } }
       );
@@ -190,7 +190,7 @@ const App = () => {
 
     try {
       await axios.put(
-        `${API_URL}/tasks/${task._id}`,
+        `${API_URL}/api/tasks/${task._id}`,
         {
           text: updatedTask.text,
           completed: updatedTask.completed,
@@ -223,7 +223,7 @@ const App = () => {
     }
 
     try {
-      const res = await fetch(`${API_URL}/users/upload-profile`, {
+      const res = await fetch(`${API_URL}/api/users/upload-profile`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
