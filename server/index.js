@@ -11,15 +11,19 @@ const userRoutes = require("./routers/userRoutes");
 
 const path = require("path");
 
-
-
-
 const app = express();
 
 connectDB();
 
+const corsOptions = {
+  origin: ['http://localhost:3000', 'https://to-do-app-zlqe.vercel.app'],
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+  credentials: true,
+};
 
-app.use(cors());
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions)); // handle preflight requests
+
 app.use(express.json());
 
 app.get("/", (req, res) => {
