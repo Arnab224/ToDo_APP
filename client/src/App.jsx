@@ -28,7 +28,7 @@ const App = () => {
   const fetchTasks = async () => {
     try {
       const res = await axios.get(`${API_BASE}/tasks`, {
-        headers: { Authorization: Bearer ${user.token} },
+        headers: { Authorization: `Bearer ${user.token}` },
       });
       setTasks(res.data);
     } catch (error) {
@@ -140,7 +140,7 @@ const App = () => {
     if (window.confirm("Are you sure you want to delete this task?")) {
       try {
         await axios.delete(`${API_BASE}/tasks/${id}`, {
-          headers: { Authorization: Bearer ${user.token} },
+          headers: { Authorization: `Bearer ${user.token}` },
         });
         setAlert("Task deleted successfully! 🗑️");
         setTimeout(() => setAlert(""), 2000);
@@ -192,7 +192,7 @@ const App = () => {
 
     try {
       await axios.put(
-        `${API_BASE}/${task._id}`,
+        `${API_BASE}/tasks/${task._id}`,
         {
           text: updatedTask.text,
           completed: updatedTask.completed,
@@ -377,7 +377,7 @@ const App = () => {
           <div className="flex items-center space-x-4">
             {user.profilePic && (
               <img
-                src={${URL}/${user.profilePic.replace(/^\/+/, '')}}
+                src={`${API_BASE}/${user.profilePic.replace(/^\/+/, '')}`}
                 alt="Profile"
                 className="w-10 h-10 rounded-full object-cover border-2 border-white shadow"
               />
