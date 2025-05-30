@@ -228,7 +228,7 @@ const App = () => {
       const res = await fetch(`${API_BASE}/api/users/upload-profile`, {
         method: "POST",
         headers: {
-          Authorization: Bearer ${token},
+          Authorization: `Bearer ${token}`,
         },
         body: formData,
       });
