@@ -17,7 +17,6 @@ connectDB();
 
 const corsOptions = {
   origin: [
-    'http://localhost:3000',
     'https://to-do-app-zlqe.vercel.app',
   ],
   methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
