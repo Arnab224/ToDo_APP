@@ -124,7 +124,7 @@ const App = () => {
       await axios.post(
         `${API_BASE}/tasks`,
         { text },
-        { headers: { Authorization: Bearer ${user.token} } }
+        { headers: { Authorization: `Bearer ${user.token}` } }
       );
       setText("");
       setAlert("Task added successfully! ✅");
@@ -167,7 +167,7 @@ const App = () => {
       await axios.put(
         `${API_BASE}/tasks/${id}`,
         { text: editText },
-        { headers: { Authorization: Bearer ${user.token} } }
+        { headers: { Authorization: `Bearer ${user.token}` } }
       );
       setEditId(null);
       setEditText("");
@@ -197,7 +197,7 @@ const App = () => {
           text: updatedTask.text,
           completed: updatedTask.completed,
         },
-        { headers: { Authorization: Bearer ${user.token} } }
+        { headers: { Authorization: `Bearer ${user.token}` } }
       );
     } catch (error) {
       console.error("Failed to update task:", error);
