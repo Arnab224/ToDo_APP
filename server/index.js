@@ -14,20 +14,18 @@ connectDB();
 const allowedOrigins = ['http://localhost:3000', 'https://to-do-app-zlqe.vercel.app'];
 
 // Fix: Use cors with proper config
-app.use(cors({
-  origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error("Not allowed by CORS"));
-    }
-  },
+const corsOptions = {
+  origin: ['http://localhost:3000', 'https://to-do-app-zlqe.vercel.app'],
   methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
   credentials: true,
-}));
+};
+
+app.use(cors(corsOptions));
+
+// 🔥 This handles preflight OPTIONS requests properly
+app.options('*', cors(corsOptions));
 
 // Fix: Preflight requests handler
-app.options('*', cors()); // Enable pre-flight across the board
 
 app.use(express.json());
 
