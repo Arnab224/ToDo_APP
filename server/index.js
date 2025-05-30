@@ -16,9 +16,10 @@ const app = express();
 connectDB();
 
 const corsOptions = {
-  origin: ['http://localhost:3000', 'https://to-do-app-zlqe.vercel.app'],
+  origin: ['https://to-do-app-zlqe.vercel.app'], // Your frontend on Vercel
   methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
   credentials: true,
+  optionsSuccessStatus: 200,
 };
 
 app.use(cors(corsOptions));
