@@ -15,12 +15,7 @@ const app = express();
 
 connectDB();
 
-app.use(cors({
-  origin: 'https://to-do-app-zlqe.vercel.app',  // allow only this frontend origin
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  credentials: true  // if you need cookies/auth headers
-}));
-
+app.use(cors())
 
 app.use(express.json());
 

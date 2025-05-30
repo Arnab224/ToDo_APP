@@ -1,7 +1,5 @@
-
 import { useEffect, useState } from "react";
 import axios from "axios";
-
 
 const App = () => {
   const [user, setUser] = useState(null);
@@ -24,11 +22,9 @@ const App = () => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [alert, setAlert] = useState("");
 
-  const API_BASE = "https://todo-app-mgt8.onrender.com"
-
   const fetchTasks = async () => {
     try {
-      const res = await axios.get(`${API_BASE}/tasks`, {
+      const res = await axios.get("http://localhost:3000/tasks", {
         headers: { Authorization: `Bearer ${user.token}` },
       });
       setTasks(res.data);
@@ -67,7 +63,7 @@ const App = () => {
     e.preventDefault();
     setLoginError("");
     try {
-      const res = await axios.post(`${API_BASE}/api/auth/login`, loginForm);
+      const res = await axios.post("http://localhost:3000/api/auth/login", loginForm);
       setUser(res.data);
       localStorage.setItem("user", JSON.stringify(res.data));
       setLoginForm({ username: "", password: "" });
@@ -87,7 +83,7 @@ const App = () => {
     };
 
     try {
-      const res = await fetch(`${API_BASE}/api/auth/register`, {
+      const res = await fetch("http://localhost:3000/api/auth/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -123,7 +119,7 @@ const App = () => {
     }
     try {
       await axios.post(
-        `${API_BASE}/tasks`,
+        "http://localhost:3000/tasks",
         { text },
         { headers: { Authorization: `Bearer ${user.token}` } }
       );
@@ -140,7 +136,7 @@ const App = () => {
   const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to delete this task?")) {
       try {
-        await axios.delete(`${API_BASE}/tasks/${id}`, {
+        await axios.delete(`http://localhost:3000/tasks/${id}`, {
           headers: { Authorization: `Bearer ${user.token}` },
         });
         setAlert("Task deleted successfully! 🗑️");
@@ -166,7 +162,7 @@ const App = () => {
     }
     try {
       await axios.put(
-        `${API_BASE}/tasks/${id}`,
+        `http://localhost:3000/tasks/${id}`,
         { text: editText },
         { headers: { Authorization: `Bearer ${user.token}` } }
       );
@@ -193,7 +189,7 @@ const App = () => {
 
     try {
       await axios.put(
-        `${API_BASE}/tasks/${task._id}`,
+        `http://localhost:3000/tasks/${task._id}`,
         {
           text: updatedTask.text,
           completed: updatedTask.completed,
@@ -226,7 +222,7 @@ const App = () => {
     }
 
     try {
-      const res = await fetch(`${API_BASE}/api/users/upload-profile`, {
+      const res = await fetch("http://localhost:3000/api/users/upload-profile", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -378,7 +374,7 @@ const App = () => {
           <div className="flex items-center space-x-4">
             {user.profilePic && (
               <img
-                src={`${API_BASE}/${user.profilePic.replace(/^\/+/, '')}`}
+                src={`http://localhost:3000/${user.profilePic.replace(/^\/+/, '')}`}
                 alt="Profile"
                 className="w-10 h-10 rounded-full object-cover border-2 border-white shadow"
               />
@@ -473,7 +469,8 @@ const App = () => {
                     <div className="flex items-center space-x-3 flex-1 min-w-0">
                       <button
                         onClick={() => toggleCompleted(task)}
-                          className={`flex-shrink-0 w-5 h-5 rounded border ${task.completed ? 'bg-green-500 border-green-500' : 'border-gray-300'} flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500`}                      >
+                        className={`flex-shrink-0 w-5 h-5 rounded border ${task.completed ? 'bg-green-500 border-green-500' : 'border-gray-300'} flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500`}
+                      >
                         {task.completed && (
                           <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
@@ -553,3 +550,4 @@ const App = () => {
 };
 
 export default App;
+
