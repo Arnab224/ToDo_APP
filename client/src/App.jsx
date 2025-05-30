@@ -27,7 +27,7 @@ const App = () => {
 
   const fetchTasks = async () => {
     try {
-      const res = await axios.get(${API_BASE}/tasks, {
+      const res = await axios.get("https://todo-app-mgt8.onrender.com/tasks", {
         headers: { Authorization: Bearer ${user.token} },
       });
       setTasks(res.data);
@@ -66,7 +66,7 @@ const App = () => {
     e.preventDefault();
     setLoginError("");
     try {
-      const res = await axios.post(${API_BASE}/api/auth/login, loginForm);
+      const res = await axios.post("https://todo-app-mgt8.onrender.com/api/auth/login", loginForm);
       setUser(res.data);
       localStorage.setItem("user", JSON.stringify(res.data));
       setLoginForm({ username: "", password: "" });
