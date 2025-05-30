@@ -2,14 +2,6 @@ const jwt = require("jsonwebtoken");
 const User = require("../model/User");
 const bcrypt = require("bcrypt");
 
-module.exports = async function handler(req, res) {
-  // CORS headers
-  res.setHeader("Access-Control-Allow-Origin", "https://to-do-app-zlqe.vercel.app");
-  res.setHeader("Access-Control-Allow-Methods", "POST,OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
-  res.setHeader("Access-Control-Allow-Credentials", "true");
-
-  if (req.method === "OPTIONS") return res.status(200).end();
 
 const register = async (req, res) => {
   const { name, username, email, password } = req.body;
