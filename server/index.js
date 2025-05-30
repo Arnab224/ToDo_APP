@@ -13,13 +13,18 @@ const path = require("path");
 
 
 
-
 const app = express();
 
 connectDB();
 
 
-app.use(cors());
+app.use(cors({
+origin: ['http://localhost:3000', 'https://to-do-app-zlqe.vercel.app'], // Specify allowed origins
+methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"], // Specify allowed methods
+credentials: true, // Allow cookies to be sent
+optionsSuccessStatus: 200, // Handle preflight requests
+}));
+
 app.use(express.json());
 
 app.get("/", (req, res) => {
