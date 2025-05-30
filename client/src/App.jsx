@@ -466,7 +466,7 @@ const App = () => {
               {tasks.map((task) => (
                 <li
                   key={task._id}
-                  className={p-4 hover:bg-gray-50 transition duration-150 ${task.completed ? 'bg-gray-50' : ''}}
+                  className={`p-4 hover:bg-gray-50 transition duration-150 ${task.completed ? 'bg-gray-50' : ''}`}
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-3 flex-1 min-w-0">
