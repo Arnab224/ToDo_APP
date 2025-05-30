@@ -22,7 +22,7 @@ const App = () => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [alert, setAlert] = useState("");
 
-    const URL = "https://to-do-app-r81h-deaugpszl-arnab224s-projects.vercel.app"
+  const URL = "https://todo-app-mgt8.onrender.com/"
 
 
   const fetchTasks = async () => {
