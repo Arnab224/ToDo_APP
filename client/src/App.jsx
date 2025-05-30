@@ -22,7 +22,7 @@ const App = () => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [alert, setAlert] = useState("");
 
-  const API_BASE = "https://todo-app-mgt8.onrender.com/"
+  const API_BASE = "https://todo-app-mgt8.onrender.com"
 
 
   const fetchTasks = async () => {
