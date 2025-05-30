@@ -22,12 +22,12 @@ const App = () => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [alert, setAlert] = useState("");
 
-  const URL = "https://todo-app-mgt8.onrender.com/"
+  const API_BASE = "https://todo-app-mgt8.onrender.com/"
 
 
   const fetchTasks = async () => {
     try {
-      const res = await axios.get(`${URL}/tasks`, {
+      const res = await axios.get(`${API_BASE}/tasks`, {
         headers: { Authorization: `Bearer ${user.token}` },
       });
       setTasks(res.data);
@@ -66,7 +66,7 @@ const App = () => {
     e.preventDefault();
     setLoginError("");
     try {
-      const res = await axios.post(`${URL}/api/auth/login`, loginForm);
+      const res = await axios.post(`${API_BASE}/api/auth/login`, loginForm);
       setUser(res.data);
       localStorage.setItem("user", JSON.stringify(res.data));
       setLoginForm({ username: "", password: "" });
@@ -86,7 +86,7 @@ const App = () => {
     };
 
     try {
-      const res = await fetch(`${URL}/api/auth/register`, {
+      const res = await fetch(`${API_BASE}/api/auth/register`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -122,7 +122,7 @@ const App = () => {
     }
     try {
       await axios.post(
-        `${URL}/tasks`,
+        `${API_BASE}/tasks`,
         { text },
         { headers: { Authorization: `Bearer ${user.token}` } }
       );
@@ -139,7 +139,7 @@ const App = () => {
   const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to delete this task?")) {
       try {
-        await axios.delete(`${URL}/tasks/${id}`, {
+        await axios.delete(`${API_BASE}/tasks/${id}`, {
           headers: { Authorization: `Bearer ${user.token}` },
         });
         setAlert("Task deleted successfully! 🗑️");
@@ -165,7 +165,7 @@ const App = () => {
     }
     try {
       await axios.put(
-        `${URL}/tasks/${id}`,
+        `${API_BASE}/tasks/${id}`,
         { text: editText },
         { headers: { Authorization: `Bearer ${user.token}` } }
       );
@@ -192,7 +192,7 @@ const App = () => {
 
     try {
       await axios.put(
-        `${URL}/${task._id}`,
+        `${API_BASE}/${task._id}`,
         {
           text: updatedTask.text,
           completed: updatedTask.completed,
@@ -225,7 +225,7 @@ const App = () => {
     }
 
     try {
-      const res = await fetch(`${URL}/api/users/upload-profile`, {
+      const res = await fetch(`${API_BASE}/api/users/upload-profile`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
