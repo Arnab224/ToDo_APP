@@ -472,8 +472,7 @@ const App = () => {
                     <div className="flex items-center space-x-3 flex-1 min-w-0">
                       <button
                         onClick={() => toggleCompleted(task)}
-                        className={flex-shrink-0 w-5 h-5 rounded border ${task.completed ? 'bg-green-500 border-green-500' : 'border-gray-300'} flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500}
-                      >
+                          className={`flex-shrink-0 w-5 h-5 rounded border ${task.completed ? 'bg-green-500 border-green-500' : 'border-gray-300'} flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500`}                      >
                         {task.completed && (
                           <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
@@ -489,7 +488,7 @@ const App = () => {
                         />
                       ) : (
                         <span
-                          className={flex-1 truncate ${task.completed ? 'line-through text-gray-400' : 'text-gray-800'}}
+                          className={`flex-1 truncate ${task.completed ? 'line-through text-gray-400' : 'text-gray-800'}`}
                         >
                           {task.text}
                         </span>
