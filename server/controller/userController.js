@@ -3,7 +3,7 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const User = require("../model/User");
 
-// Update profile picture controller
+// ✅ Update profile picture
 const updateProfilePic = async (req, res) => {
   if (!req.file) return res.status(400).json({ message: "No file uploaded" });
 
@@ -23,10 +23,10 @@ const updateProfilePic = async (req, res) => {
   }
 };
 
-// Get user profile controller
+// ✅ Get user profile
 const getUserProfile = async (req, res) => {
   try {
-    const user = await User.findById(req.user._id).select("username profilePic");
+    const user = await User.findById(req.user._id).select("username email name profilePic");
     if (!user) return res.status(404).json({ message: "User not found" });
     res.json(user);
   } catch (error) {
@@ -34,7 +34,7 @@ const getUserProfile = async (req, res) => {
   }
 };
 
-// Login user controller
+// ✅ Login user
 const loginUser = async (req, res) => {
   const { email, password } = req.body;
 
@@ -49,7 +49,6 @@ const loginUser = async (req, res) => {
       expiresIn: "1d",
     });
 
-    // 🔍 Debug logs
     console.log("=== DEBUG: Login Controller ===");
     console.log("JWT Secret (signing):", process.env.JWT_SECRET);
     console.log("Generated Token:", token);
@@ -57,6 +56,7 @@ const loginUser = async (req, res) => {
     res.json({
       _id: user._id,
       username: user.username,
+      name: user.name,
       email: user.email,
       profilePic: user.profilePic,
       token,
@@ -66,4 +66,37 @@ const loginUser = async (req, res) => {
   }
 };
 
-module.exports = { updateProfilePic, getUserProfile, loginUser };
+// ✅ Update name/username/email
+const updateUserProfile = async (req, res) => {
+  const { name, username, email } = req.body;
+
+  try {
+    const updatedUser = await User.findByIdAndUpdate(
+      req.user._id,
+      { name, username, email },
+      { new: true }
+    );
+
+    if (!updatedUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.json({
+      _id: updatedUser._id,
+      name: updatedUser.name,
+      username: updatedUser.username,
+      email: updatedUser.email,
+      profilePic: updatedUser.profilePic,
+    });
+  } catch (error) {
+    console.error("Update profile error:", error);
+    res.status(500).json({ message: "Failed to update profile" });
+  }
+};
+
+module.exports = {
+  updateProfilePic,
+  getUserProfile,
+  loginUser,
+  updateUserProfile, // ✅ Exported here
+};

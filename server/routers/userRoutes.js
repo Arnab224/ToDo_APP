@@ -4,9 +4,11 @@ const router = express.Router();
 const multer = require("multer");
 const path = require("path");
 const { protect } = require("../middleware/authMiddleware");
+
 const {
   updateProfilePic,
   getUserProfile,
+  updateUserProfile, // ✅ ADD THIS
   loginUser,
 } = require("../controller/userController");
 
@@ -25,5 +27,8 @@ const upload = multer({ storage });
 router.post("/login", loginUser);
 router.post("/upload-profile", protect, upload.single("profilePic"), updateProfilePic);
 router.get("/profile", protect, getUserProfile);
+
+// ✅ New Route: Update name/username/email
+router.put("/update-profile", protect, updateUserProfile);
 
 module.exports = router;

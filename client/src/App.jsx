@@ -1,12 +1,12 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import AuthForm from "./components/AuthForm";
 import Header from "./components/Header";
-import ProfileUpload from "./components/ProfileUpload";
 import TaskForm from "./components/TaskForm";
 import TaskList from "./components/TaskList";
-import Alert from "./components/Alert";
 import AIDashboard from "./components/AIDashboard";
+import Alert from "./components/Alert";
+import ProfileSection from "./components/ProfileSection";
 
 const App = () => {
   const [user, setUser] = useState(null);
@@ -15,32 +15,14 @@ const App = () => {
   const [editId, setEditId] = useState(null);
   const [editText, setEditText] = useState("");
   const [notification, setNotification] = useState("");
-
   const [loginForm, setLoginForm] = useState({ username: "", password: "" });
-  const [signupForm, setSignupForm] = useState({
-    name: "",
-    username: "",
-    password: "",
-    email: "",
-  });
+  const [signupForm, setSignupForm] = useState({ name: "", username: "", password: "", email: "" });
   const [loginError, setLoginError] = useState("");
   const [signupError, setSignupError] = useState("");
   const [showSignup, setShowSignup] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
   const [alert, setAlert] = useState("");
-
-  const fetchTasks = async () => {
-    try {
-      const res = await axios.get("http://localhost:3000/tasks", {
-        headers: { Authorization: `Bearer ${user.token}` },
-      });
-      setTasks(res.data);
-    } catch (error) {
-      console.error("Fetch tasks error:", error);
-      setAlert("Failed to fetch tasks. Please login again.");
-      handleLogout();
-    }
-  };
+  const [showProfile, setShowProfile] = useState(false);
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
@@ -57,6 +39,19 @@ const App = () => {
   useEffect(() => {
     if (user) fetchTasks();
   }, [user]);
+
+  const fetchTasks = async () => {
+    try {
+      const res = await axios.get("http://localhost:3000/tasks", {
+        headers: { Authorization: `Bearer ${user.token}` },
+      });
+      setTasks(res.data);
+    } catch (error) {
+      console.error("Fetch tasks error:", error);
+      setAlert("Failed to fetch tasks. Please login again.");
+      handleLogout();
+    }
+  };
 
   const handleLoginChange = (e) => {
     setLoginForm({ ...loginForm, [e.target.name]: e.target.value });
@@ -117,9 +112,9 @@ const App = () => {
     setTasks([]);
   };
 
-  const handleCreate = async (e) => {
-    e.preventDefault();
-    if (!text.trim()) {
+  const handleCreate = async (taskText) => {
+    const textToUse = taskText || text;
+    if (!textToUse.trim()) {
       setAlert("Please enter a task");
       setTimeout(() => setAlert(""), 2000);
       return;
@@ -127,7 +122,7 @@ const App = () => {
     try {
       await axios.post(
         "http://localhost:3000/tasks",
-        { text },
+        { text: textToUse },
         { headers: { Authorization: `Bearer ${user.token}` } }
       );
       setText("");
@@ -137,22 +132,6 @@ const App = () => {
     } catch (error) {
       setAlert("Failed to add task");
       setTimeout(() => setAlert(""), 2000);
-    }
-  };
-
-  const handleDelete = async (id) => {
-    if (window.confirm("Are you sure you want to delete this task?")) {
-      try {
-        await axios.delete(`http://localhost:3000/tasks/${id}`, {
-          headers: { Authorization: `Bearer ${user.token}` },
-        });
-        setAlert("Task deleted successfully! 🗑️");
-        setTimeout(() => setAlert(""), 2000);
-        fetchTasks();
-      } catch (error) {
-        setAlert("Failed to delete task");
-        setTimeout(() => setAlert(""), 2000);
-      }
     }
   };
 
@@ -184,76 +163,39 @@ const App = () => {
     }
   };
 
+  const handleDelete = async (id) => {
+    if (window.confirm("Are you sure you want to delete this task?")) {
+      try {
+        await axios.delete(`http://localhost:3000/tasks/${id}`, {
+          headers: { Authorization: `Bearer ${user.token}` },
+        });
+        setAlert("Task deleted successfully! 🗑️");
+        setTimeout(() => setAlert(""), 2000);
+        fetchTasks();
+      } catch (error) {
+        setAlert("Failed to delete task");
+        setTimeout(() => setAlert(""), 2000);
+      }
+    }
+  };
+
   const toggleCompleted = async (task) => {
     const updatedTask = {
       ...task,
       completed: !task.completed,
     };
 
-    setTasks(prev =>
-      prev.map(t => (t._id === task._id ? updatedTask : t))
-    );
+    setTasks(prev => prev.map(t => (t._id === task._id ? updatedTask : t)));
 
     try {
       await axios.put(
         `http://localhost:3000/tasks/${task._id}`,
-        {
-          text: updatedTask.text,
-          completed: updatedTask.completed,
-        },
+        updatedTask,
         { headers: { Authorization: `Bearer ${user.token}` } }
       );
     } catch (error) {
       console.error("Failed to update task:", error);
       setTasks(prev => prev.map(t => (t._id === task._id ? task : t)));
-    }
-  };
-
-  const handleUpload = async () => {
-    if (!selectedFile) {
-      setAlert("Please select a file first.");
-      setTimeout(() => setAlert(""), 2000);
-      return;
-    }
-
-    const formData = new FormData();
-    formData.append("profilePic", selectedFile);
-
-    const userData = JSON.parse(localStorage.getItem("user"));
-    const token = userData?.token;
-
-    if (!token) {
-      setAlert("No token found. Please login again.");
-      setTimeout(() => setAlert(""), 2000);
-      return;
-    }
-
-    try {
-      const res = await fetch("http://localhost:3000/api/users/upload-profile", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        body: formData,
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        console.error("Upload failed:", data.message);
-        setAlert("Upload failed: " + data.message);
-        setTimeout(() => setAlert(""), 2000);
-      } else {
-        const updatedUser = { ...user, profilePic: data.profilePic };
-        setUser(updatedUser);
-        localStorage.setItem("user", JSON.stringify(updatedUser));
-        setAlert("Profile picture updated successfully! ✅");
-        setTimeout(() => setAlert(""), 2000);
-      }
-    } catch (err) {
-      console.error("Upload error:", err);
-      setAlert("Upload error: " + err.message);
-      setTimeout(() => setAlert(""), 2000);
     }
   };
 
@@ -278,27 +220,29 @@ const App = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 py-8 px-4">
       <div className="max-w-2xl mx-auto">
-        <Header user={user} handleLogout={handleLogout} />
-
-        
-        
-        <ProfileUpload
-          selectedFile={selectedFile}
-          setSelectedFile={setSelectedFile}
-          handleUpload={handleUpload}
+        <Header
+          user={user}
+          handleLogout={handleLogout}
+          onProfileClick={() => setShowProfile((prev) => !prev)}
         />
 
-        <Alert alert={alert} />
+        {showProfile && <ProfileSection user={user} setUser={setUser} />}
+
+        <AIDashboard
+          tasks={tasks}
+          user={user}
+          onTaskUpdate={handleUpdate}
+          onTaskCreate={handleCreate}
+        />
 
         <TaskForm
           text={text}
           setText={setText}
-          handleCreate={handleCreate}
+          handleCreate={(e) => {
+            e.preventDefault();
+            handleCreate();
+          }}
         />
-
-
-        <AIDashboard />
-
 
         <TaskList
           tasks={tasks}
@@ -311,6 +255,8 @@ const App = () => {
           toggleCompleted={toggleCompleted}
           setEditId={setEditId}
         />
+
+        {alert && <Alert message={alert} />}
       </div>
     </div>
   );
