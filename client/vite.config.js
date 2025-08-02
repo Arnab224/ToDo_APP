@@ -13,6 +13,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/tasks': 'http://localhost:3000',
+      '/api': 'http://localhost:3000'
     },
   },
 })

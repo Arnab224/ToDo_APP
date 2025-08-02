@@ -5,7 +5,7 @@ const {
   deleteTask,
   editTask,
   toggleCompleted
-} = require("../controler/taskController");
+} = require("../controller/taskController");
 const authenticateUser = require("../middleware/authenticateUser");
 
 const router = express.Router();

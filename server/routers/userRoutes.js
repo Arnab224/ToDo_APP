@@ -8,7 +8,7 @@ const {
   updateProfilePic,
   getUserProfile,
   loginUser,
-} = require("../controler/userController");
+} = require("../controller/userController");
 
 // Multer config
 const storage = multer.diskStorage({

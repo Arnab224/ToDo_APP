@@ -1,5 +1,12 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import AuthForm from "./components/AuthForm";
+import Header from "./components/Header";
+import ProfileUpload from "./components/ProfileUpload";
+import TaskForm from "./components/TaskForm";
+import TaskList from "./components/TaskList";
+import Alert from "./components/Alert";
+import AIDashboard from "./components/AIDashboard";
 
 const App = () => {
   const [user, setUser] = useState(null);
@@ -252,302 +259,61 @@ const App = () => {
 
   if (!user) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 px-4">
-        <div className="w-full max-w-md">
-          {alert && (
-            <div className="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-4 rounded">
-              {alert}
-            </div>
-          )}
-          <form
-            onSubmit={showSignup ? handleSignupSubmit : handleLoginSubmit}
-            className="bg-white p-8 rounded-lg shadow-xl"
-          >
-            <h2 className="text-3xl font-bold mb-6 text-center text-gray-800">
-              {showSignup ? "Create Account" : "Welcome Back"}
-            </h2>
-            <p className="text-gray-600 text-center mb-6">
-              {showSignup ? "Join us today!" : "Sign in to continue"}
-            </p>
-
-            {showSignup && (
-              <>
-                <div className="mb-4">
-                  <label className="block text-gray-700 text-sm font-medium mb-1">Full Name</label>
-                  <input
-                    name="name"
-                    placeholder="John Doe"
-                    value={signupForm.name}
-                    onChange={handleSignupChange}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    required
-                  />
-                </div>
-                <div className="mb-4">
-                  <label className="block text-gray-700 text-sm font-medium mb-1">Email</label>
-                  <input
-                    name="email"
-                    placeholder="john@example.com"
-                    type="email"
-                    value={signupForm.email}
-                    onChange={handleSignupChange}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    required
-                  />
-                </div>
-              </>
-            )}
-
-            <div className="mb-4">
-              <label className="block text-gray-700 text-sm font-medium mb-1">
-                {showSignup ? "Choose a Username" : "Username"}
-              </label>
-              <input
-                name="username"
-                placeholder={showSignup ? "johndoe123" : "Enter your username"}
-                value={showSignup ? signupForm.username : loginForm.username}
-                onChange={showSignup ? handleSignupChange : handleLoginChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                required
-              />
-            </div>
-
-            <div className="mb-6">
-              <label className="block text-gray-700 text-sm font-medium mb-1">
-                {showSignup ? "Create a Password" : "Password"}
-              </label>
-              <input
-                name="password"
-                type="password"
-                placeholder={showSignup ? "••••••••" : "••••••••"}
-                value={showSignup ? signupForm.password : loginForm.password}
-                onChange={showSignup ? handleSignupChange : handleLoginChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                required
-                minLength={6}
-              />
-              {showSignup && (
-                <p className="text-xs text-gray-500 mt-1">Minimum 6 characters</p>
-              )}
-            </div>
-
-            {loginError && !showSignup && (
-              <p className="text-red-500 text-sm mb-4 text-center">{loginError}</p>
-            )}
-            {signupError && showSignup && (
-              <p className="text-red-500 text-sm mb-4 text-center">{signupError}</p>
-            )}
-
-            <button
-              type="submit"
-              className="w-full bg-blue-600 text-white py-3 rounded-lg font-medium hover:bg-blue-700 transition duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-            >
-              {showSignup ? "Sign Up" : "Login"}
-            </button>
-
-            <div className="mt-4 text-center">
-              <button
-                type="button"
-                onClick={() => setShowSignup(!showSignup)}
-                className="text-blue-600 hover:text-blue-800 text-sm font-medium transition duration-200"
-              >
-                {showSignup
-                  ? "Already have an account? Sign In"
-                  : "Don't have an account? Sign Up"}
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
+      <AuthForm
+        showSignup={showSignup}
+        setShowSignup={setShowSignup}
+        loginForm={loginForm}
+        signupForm={signupForm}
+        loginError={loginError}
+        signupError={signupError}
+        alert={alert}
+        handleLoginChange={handleLoginChange}
+        handleSignupChange={handleSignupChange}
+        handleLoginSubmit={handleLoginSubmit}
+        handleSignupSubmit={handleSignupSubmit}
+      />
     );
   }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 py-8 px-4">
       <div className="max-w-2xl mx-auto">
-        {/* Header Section */}
-        <header className="flex justify-between items-center mb-8">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-800">Task Manager</h1>
-            <p className="text-gray-600">Stay organized and productive</p>
-          </div>
-          <div className="flex items-center space-x-4">
-            {user.profilePic && (
-              <img
-                src={`http://localhost:3000/${user.profilePic.replace(/^\/+/, '')}`}
-                alt="Profile"
-                className="w-10 h-10 rounded-full object-cover border-2 border-white shadow"
-              />
-            )}
-            <div>
-              <p className="font-medium text-gray-800">Hi, {user.name}</p>
-              <button
-                onClick={handleLogout}
-                className="text-sm text-red-500 hover:text-red-700 transition duration-200"
-              >
-                Logout
-              </button>
-            </div>
-          </div>
-        </header>
+        <Header user={user} handleLogout={handleLogout} />
 
-        {/* Profile Picture Upload */}
-        <div className="bg-white p-4 rounded-lg shadow-md mb-6">
-          <h2 className="text-lg font-medium text-gray-800 mb-3">Profile Settings</h2>
-          <div className="flex items-center gap-4">
-            <div className="flex-1">
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Update Profile Picture
-              </label>
-              <input
-                type="file"
-                accept="image/*"
-                onChange={(e) => setSelectedFile(e.target.files[0])}
-                className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4
-                          file:rounded-lg file:border-0 file:text-sm file:font-medium
-                          file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100
-                          focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-              />
-            </div>
-            <button
-              onClick={handleUpload}
-              disabled={!selectedFile}
-              className={`px-4 py-2 rounded-lg font-medium ${selectedFile ? 'bg-green-600 text-white hover:bg-green-700' : 'bg-gray-200 text-gray-500 cursor-not-allowed'} transition duration-200`}
-            >
-              Upload
-            </button>
-          </div>
-        </div>
+        
+        
+        <ProfileUpload
+          selectedFile={selectedFile}
+          setSelectedFile={setSelectedFile}
+          handleUpload={handleUpload}
+        />
 
-        {/* Alert Messages */}
-        {alert && (
-          <div className="bg-blue-100 border-l-4 border-blue-500 text-blue-700 p-4 mb-6 rounded">
-            <p>{alert}</p>
-          </div>
-        )}
+        <Alert alert={alert} />
 
-        {/* Add Task Form */}
-        <div className="bg-white p-4 rounded-lg shadow-md mb-6">
-          <form onSubmit={handleCreate} className="flex gap-2">
-            <input
-              type="text"
-              placeholder="What needs to be done?"
-              value={text}
-              onChange={(e) => setText(e.target.value)}
-              className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              autoFocus
-            />
-            <button
-              type="submit"
-              className="bg-blue-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-blue-700 transition duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-            >
-              Add Task
-            </button>
-          </form>
-        </div>
+        <TaskForm
+          text={text}
+          setText={setText}
+          handleCreate={handleCreate}
+        />
 
-        {/* Task List */}
-        <div className="bg-white rounded-lg shadow-md overflow-hidden">
-          <div className="p-4 border-b">
-            <h2 className="text-lg font-medium text-gray-800">
-              My Tasks ({tasks.length})
-            </h2>
-          </div>
-          
-          {tasks.length === 0 ? (
-            <div className="p-8 text-center">
-              <p className="text-gray-500">No tasks yet. Add one above!</p>
-            </div>
-          ) : (
-            <ul className="divide-y divide-gray-200">
-              {tasks.map((task) => (
-                <li
-                  key={task._id}
-                  className={`p-4 hover:bg-gray-50 transition duration-150 ${task.completed ? 'bg-gray-50' : ''}`}
-                >
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-3 flex-1 min-w-0">
-                      <button
-                        onClick={() => toggleCompleted(task)}
-                        className={`flex-shrink-0 w-5 h-5 rounded border ${task.completed ? 'bg-green-500 border-green-500' : 'border-gray-300'} flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500`}
-                      >
-                        {task.completed && (
-                          <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                          </svg>
-                        )}
-                      </button>
-                      {editId === task._id ? (
-                        <input
-                          value={editText}
-                          onChange={(e) => setEditText(e.target.value)}
-                          className="flex-1 px-3 py-1 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                          autoFocus
-                        />
-                      ) : (
-                        <span
-                          className={`flex-1 truncate ${task.completed ? 'line-through text-gray-400' : 'text-gray-800'}`}
-                        >
-                          {task.text}
-                        </span>
-                      )}
-                    </div>
 
-                    <div className="flex items-center space-x-2 ml-3">
-                      {editId === task._id ? (
-                        <>
-                          <button
-                            onClick={() => handleUpdate(task._id)}
-                            className="p-1 text-green-600 hover:text-green-800 rounded-full hover:bg-green-50 transition duration-200"
-                            title="Save"
-                          >
-                            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                            </svg>
-                          </button>
-                          <button
-                            onClick={() => setEditId(null)}
-                            className="p-1 text-gray-500 hover:text-gray-700 rounded-full hover:bg-gray-100 transition duration-200"
-                            title="Cancel"
-                          >
-                            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                            </svg>
-                          </button>
-                        </>
-                      ) : (
-                        <>
-                          <button
-                            onClick={() => handleEdit(task)}
-                            className="p-1 text-blue-500 hover:text-blue-700 rounded-full hover:bg-blue-50 transition duration-200"
-                            title="Edit"
-                          >
-                            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                            </svg>
-                          </button>
-                          <button
-                            onClick={() => handleDelete(task._id)}
-                            className="p-1 text-red-500 hover:text-red-700 rounded-full hover:bg-red-50 transition duration-200"
-                            title="Delete"
-                          >
-                            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                            </svg>
-                          </button>
-                        </>
-                      )}
-                    </div>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
+        <AIDashboard />
+
+
+        <TaskList
+          tasks={tasks}
+          editId={editId}
+          editText={editText}
+          setEditText={setEditText}
+          handleEdit={handleEdit}
+          handleUpdate={handleUpdate}
+          handleDelete={handleDelete}
+          toggleCompleted={toggleCompleted}
+          setEditId={setEditId}
+        />
       </div>
     </div>
   );
 };
 
 export default App;
-

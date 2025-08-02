@@ -7,6 +7,7 @@ const connectDB = require("./config/db");
 const taskRoutes = require("./routers/taskRouters");
 const authRoutes = require("./routers/authRouters");
 const userRoutes = require("./routers/userRoutes");
+const aiRoutes = require("./routers/aiRoutes");
 
 
 const path = require("path");
@@ -29,10 +30,11 @@ app.use("/api/auth", authRoutes);
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 app.use("/api/users", userRoutes);
+app.use("/api/ai", aiRoutes);
 
 
 
-// Use port from .env or default to 3000
+
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
