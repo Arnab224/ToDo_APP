@@ -8,15 +8,12 @@ client/node_modules/
 # ------------------------------
 # Build & Temp output
 # ------------------------------
-dist/
-server/dist/
+client/dist/
 client/.vite/
-server/build/
 client/build/
+server/build/
 .temp/
 .cache/
-
-
 
 # ------------------------------
 # Environment variables
@@ -24,7 +21,7 @@ client/build/
 .env
 .env.local
 server/.env
-server/.env
+client/.env
 
 # ------------------------------
 # Logs
