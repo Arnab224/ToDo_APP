@@ -1,0 +1,72 @@
+# ------------------------------
+# Node modules
+# ------------------------------
+node_modules/
+frontend/node_modules/
+backend/node_modules/
+
+# ------------------------------
+# Build & Temp output
+# ------------------------------
+dist/
+frontend/dist/
+frontend/.vite/
+backend/build/
+.temp/
+.cache/
+
+# ------------------------------
+# Environment variables
+# ------------------------------
+.env
+.env.local
+frontend/.env
+backend/.env
+
+# ------------------------------
+# Logs
+# ------------------------------
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+logs/
+
+# ------------------------------
+# System files
+# ------------------------------
+.DS_Store
+Thumbs.db
+
+# ------------------------------
+# Editor configs
+# ------------------------------
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# ------------------------------
+# Uploads (if using Cloudinary or S3)
+# ------------------------------
+backend/uploads/
+
+# ------------------------------
+# Socket.io Cache
+# ------------------------------
+socket.io/
+
+# ------------------------------
+# Docker
+# ------------------------------
+docker-compose.override.yml
+docker-compose.override.yaml
+.docker/
+
+# ------------------------------
+# Other Ignored Files
+# ------------------------------
+*.local
+*.bak
+*.tmp
