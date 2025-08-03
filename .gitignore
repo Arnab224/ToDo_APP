@@ -47,26 +47,3 @@ Thumbs.db
 *.sublime-workspace
 *.sublime-project
 
-# ------------------------------
-# Uploads (if using Cloudinary or S3)
-# ------------------------------
-server/uploads/
-
-# ------------------------------
-# Socket.io Cache
-# ------------------------------
-socket.io/
-
-# ------------------------------
-# Docker
-# ------------------------------
-docker-compose.override.yml
-docker-compose.override.yaml
-.docker/
-
-# ------------------------------
-# Other Ignored Files
-# ------------------------------
-*.local
-*.bak
-*.tmp
