@@ -8,8 +8,9 @@ dist/
 client/dist/
 server/dist/
 
-# Vite and temporary folders
-.vite/
+# Vite and temp
+client/.vite/
+server/.vite/
 .temp/
 .cache/
 
@@ -23,8 +24,7 @@ server/.env
 *.log
 npm-debug.log*
 
-# OS/Editor files
+# Editor/OS files
 .DS_Store
-*.swp
-.idea/
 .vscode/
+.idea/
